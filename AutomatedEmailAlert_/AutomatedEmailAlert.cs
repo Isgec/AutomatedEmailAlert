@@ -60,8 +60,8 @@ namespace AutomatedEmailAlert_
                         string sIndenter = dr["Indenter"].ToString();
                         string sPONo = dr["PONo"].ToString();
                         string sDivision = dr["Division"].ToString();
-                        string sHODEmail = "";
-                        string sHODmail = "";
+                     //   string sHODEmail = "";
+                        //string sHODmail = "";
 
                         string sRecord2 = @"Select * from AutomatedEmailAlert where PONo='" + sPONo + "' and Indenter ='" + sIndenter + "' and Buyer= '" + sBuyer + "' order by POLine ";
                         if (con.State != ConnectionState.Open)
@@ -82,47 +82,48 @@ namespace AutomatedEmailAlert_
                                 con2.Open();
                             }
                              SqlTransaction tran1 = con2.BeginTransaction();
-                            string sHODCode = "select HODEmployeeCode from ProjectHODsAutoAlert where Division = '" + sDivision + "' ";
-                            SqlCommand cmdHODCode = new SqlCommand(sHODCode, con2, tran1);
-                            var dt3 = new DataTable();
-                            using (SqlDataReader dr2 = cmdHODCode.ExecuteReader())
-                            {
-                                dt3.Load(dr2);
-                                // return tb;
-                            }
+                            //string sHODCode = "select HODEmployeeCode from ProjectHODsAutoAlert where Division = '" + sDivision + "' ";
+                            //SqlCommand cmdHODCode = new SqlCommand(sHODCode, con2, tran1);
+                            //var dt3 = new DataTable();
+                            //using (SqlDataReader dr2 = cmdHODCode.ExecuteReader())
+                            //{
+                            //    dt3.Load(dr2);
+                            //    // return tb;
+                            //}
                             string sBuyermail = "select EMailID from HRM_Employees where CardNo = " + sBuyer + " ";
                             SqlCommand cmdBuyerEmail = new SqlCommand(sBuyermail, con2, tran1);
                             string sBuyerEmail = cmdBuyerEmail.ExecuteScalar().ToString();
                             string sIndentermail = "select EMailID from HRM_Employees where CardNo = " + sIndenter + "";
                             SqlCommand cmdIndenterEmail = new SqlCommand(sIndentermail, con2, tran1);
                             string sIndenterEmail = cmdIndenterEmail.ExecuteScalar().ToString();
-                            if (dt3.Rows.Count == 1)
-                            {
-                                sHODmail = "select EMailID from HRM_Employees where CardNo = " + dt3.Rows[0]["HODEmployeeCode"] + "";
-                                SqlCommand cmdHODEmail = new SqlCommand(sHODmail, con2, tran1);
-                                sHODEmail += cmdHODEmail.ExecuteScalar().ToString();
-                                sHODEmail += ";";
-                            }
-                            else if (dt3.Rows.Count > 1)
-                            {
-                                foreach (DataRow datarow1 in dt3.Rows)
-                                {
-                                    sHODmail = "select EMailID from HRM_Employees where CardNo = " + datarow1["HODEmployeeCode"] + "";
-                                    SqlCommand cmdHODEmail = new SqlCommand(sHODmail, con2, tran1);
-                                    sHODEmail += cmdHODEmail.ExecuteScalar().ToString();
-                                    sHODEmail += ";";
-                                }
-                            }
-                            else
-                            {
-                                sHODEmail = ";";
-                            }
+                            //if (dt3.Rows.Count == 1)
+                            //{
+                            //    sHODmail = "select EMailID from HRM_Employees where CardNo = " + dt3.Rows[0]["HODEmployeeCode"] + "";
+                            //    SqlCommand cmdHODEmail = new SqlCommand(sHODmail, con2, tran1);
+                            //    sHODEmail += cmdHODEmail.ExecuteScalar().ToString();
+                            //    sHODEmail += ";";
+                            //}
+                            //else if (dt3.Rows.Count > 1)
+                            //{
+                            //    foreach (DataRow datarow1 in dt3.Rows)
+                            //    {
+                            //        sHODmail = "select EMailID from HRM_Employees where CardNo = " + datarow1["HODEmployeeCode"] + "";
+                            //        SqlCommand cmdHODEmail = new SqlCommand(sHODmail, con2, tran1);
+                            //        sHODEmail += cmdHODEmail.ExecuteScalar().ToString();
+                            //        sHODEmail += ";";
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    sHODEmail = ";";
+                            //}
                             MailToBuyer_Indenter = sBuyerEmail + ";" + sIndenterEmail; 
                             //"sagar.shukla@isgec.co.in";
                             // sHODEmail = "pankaj.gupta@isgec.co.in";
                             //sBuyerEmail + ";" + sIndenterEmail;
                         }
-                        SendMail(MailToBuyer_Indenter, sHODEmail, dt4);
+                        //SendMail(MailToBuyer_Indenter, sHODEmail, dt4);
+                        SendMail(MailToBuyer_Indenter, dt4);
                     }
 
                 }
@@ -141,7 +142,8 @@ namespace AutomatedEmailAlert_
             }
         }
 
-        public void SendMail(string MailToBuyer_Indenter, string sHODEmail, DataTable dt4)
+         //;public void SendMail(string MailToBuyer_Indenter, string sHODEmail, DataTable dt4)
+         public void SendMail(string MailToBuyer_Indenter, DataTable dt4)
         {
             try
             {
@@ -151,10 +153,10 @@ namespace AutomatedEmailAlert_
                 {
                     mM.To.Add(address);
                 }
-                foreach (var address in sHODEmail.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    mM.CC.Add(address);
-                }
+                //foreach (var address in sHODEmail.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                //{
+                //    mM.CC.Add(address);
+                //}
                 // Below two Cc Added to check the proper email functionality
                 mM.CC.Add("baansupport@isgec.co.in");
                 mM.CC.Add("veena@isgec.co.in");
